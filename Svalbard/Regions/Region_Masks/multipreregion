@@ -1,0 +1,3 @@
+for i= 1:6
+   preregion(['07_rgi60_Svalbard_corr_R',num2str(i),'.mat'],'/home/s1423313/Documents/Svalbard/Regions/07_rgi60_Svalbard_corr_marine.tif',['07_rgi60_Svalbard_corr_land_R',num2str(i)]);
+end

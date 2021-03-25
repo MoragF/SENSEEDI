@@ -1,0 +1,3 @@
+gdal_rasterize -burn 1 -tr 0.036 0.009  -where "TermType='1' AND O2Region='1'" 07_rgi60_Svalbard_corr.shp 07_rgi60_Svalbard_corr_marine.tif
+
+gdal_rasterize -burn 1 -tr 0.036 0.009  -where "TermType='0' AND O2Region='1' AND Aspect>180" 07_rgi60_Svalbard.shp 07_rgi60_Svalbard_landE.tif

@@ -1,0 +1,19 @@
+function elevmultiplot(nR,fname,tmsr)
+    labels= NaN(nR,1);
+    colour = colormap(jet(9))
+    figure();
+    hold all
+    for i = 2:nR
+        name = ['R',num2str(i)];
+        data = matfile(['/geos/d14/CS2/dhdt/Timeseries/Svalbard_MR',num2str(i),'_MF/tmsr_45_90_07_rgi60_Svalbard_corr_marine_R',num2str(i),'.mat']);
+        plot(data.time,data.Tmsr,'k','Linewidth',1,'DisplayName',name,'color',colour(i,:));    
+    end
+    datetick('x','yyyy');
+    xlabel('Time','Fontsize',10); ylabel('Elevation [m]','Fontsize',10);
+    legend('Location','southwest');
+    title('Svalbard Marine Terminating: Elevation Change')
+    axis tight
+    hold off
+    print(fname, '-djpeg')
+end
+
