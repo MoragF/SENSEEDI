@@ -7,7 +7,7 @@ function marMSK(tifname)
     Ny = 430;
     lon = xstart + times((0:Nx-1),0.0360);
     lat = ystart + times((0:Ny-1),-0.0090);
-    for nj = 17
+    for nj =1:19
         MARf = ['/exports/csce/datastore/geos/groups/geos_EO/Databases/MAR/Svalbard-RA/MARv3.11.2-6km-daily-ERA5-',num2str(2000+nj),'.nc'];
         smb = ncread(MARf, 'SMB');
         rf = ncread(MARf, 'RF');
@@ -41,4 +41,4 @@ function marMSK(tifname)
         ncwrite(file,'lon',lon);
         ncwrite(file,'lat',lat);
     end
- end
+end
