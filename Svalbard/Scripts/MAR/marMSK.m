@@ -11,33 +11,56 @@ function marMSK(tifname)
         MARf = ['/exports/csce/datastore/geos/groups/geos_EO/Databases/MAR/Svalbard-RA/MARv3.11.2-6km-daily-ERA5-',num2str(2000+nj),'.nc'];
         smb = ncread(MARf, 'SMB');
         rf = ncread(MARf, 'RF');
+        sf = ncread(MARf, 'SF');
+        me = ncread(MARf, 'ME');
+        sh = ncread(MARf, 'ZN6');
+        su = ncread(MARf,'SU');
+        ru = ncread(MARf,'RU');
         mlat = ncread(MARf, 'LAT');
         mlon = ncread(MARf, 'LON');
-        time = ncread(MARf, 'TIME');
-    
-        for ni = 1:length(time)
+        t = ncread(MARf, 'TIME');
+        nt = length(t);
+        SMB = zeros(430,487,nt);
+        RF = zeros(430,487,nt);
+        SF = zeros(430,487,nt);
+        ME = zeros(430,487,nt);
+        SH = zeros(430,487,nt);
+        SU = zeros(430,487,nt);
+        RU = zeros(430,487,nt);
+        
+        for ni = 1:nt
             ni
             %project variable on to the mesh for the mask(tif)
-            SMB(:,:,ni) = griddata(double(mlon),double(mlat),smb(:,:,1,ni),double(xx),double(yy),'linear');
-            %project variable on to the mesh for the mask(tif)
-            RF(:,:,ni) = griddata(double(mlon),double(mlat),rf(:,:,ni),double(xx),double(yy),'linear');       
+            SMB(:,:,ni) =griddata(double(mlon),double(mlat),smb(:,:,1,ni),double(xx),double(yy),'linear');
+            RF(:,:,ni) = griddata(double(mlon),double(mlat),rf(:,:,ni),double(xx),double(yy),'linear'); 
+            SF(:,:,ni) = griddata(double(mlon),double(mlat),sf(:,:,ni),double(xx),double(yy),'linear');
+            ME(:,:,ni) = griddata(double(mlon),double(mlat),me(:,:,1,ni),double(xx),double(yy),'linear');
+            SH(:,:,ni) = griddata(double(mlon),double(mlat),double(sh(:,:,1,ni)),double(xx),double(yy),'linear');
+            SU(:,:,ni) = griddata(double(mlon),double(mlat),su(:,:,1,ni),double(xx),double(yy),'linear');
+            RU(:,:,ni) = griddata(double(mlon),double(mlat),ru(:,:,1,ni),double(xx),double(yy),'linear');
         end
         nj
-        file = ['/exports/csce/datastore/geos/groups/geos_EO/Databases/MAR/Svalbard-RA/Svalbard_Masked/Years/Svalbard_',num2str(2000+nj),'.nc'];
+        file = ['/exports/csce/datastore/geos/groups/geos_EO/Databases/MAR/Svalbard-RA/Svalbard_Masked/test/Svalbard_',num2str(2000+nj),'.nc'];
         nx = 487;
         nccreate(file,'lon','Dimensions',{'lon',1,nx},'DeflateLevel',7) ;
         ny = 430;
         nccreate(file,'lat','Dimensions',{'lat',1,ny},'DeflateLevel',7) ;
-        nt = length(time)
-        size(SMB)
-        size(lat)
-        size(lon)
         nccreate(file,'time','Dimensions',{'time',1,nt},'DeflateLevel',7) ;
         nccreate(file,'smb','Dimensions',{'lat','lon','time'},'DeflateLevel',7) ;
         nccreate(file,'rf','Dimensions',{'lat','lon','time'},'DeflateLevel',7) ;
+        nccreate(file,'sf','Dimensions',{'lat','lon','time'},'DeflateLevel',7) ;
+        nccreate(file,'su','Dimensions',{'lat','lon','time'},'DeflateLevel',7) ;
+        nccreate(file,'me','Dimensions',{'lat','lon','time'},'DeflateLevel',7) ;
+        nccreate(file,'sh','Dimensions',{'lat','lon','time'},'DeflateLevel',7) ;
+        nccreate(file,'ru','Dimensions',{'lat','lon','time'},'DeflateLevel',7) ;
+        ncwrite(file,'sh',SH);
+        ncwrite(file,'ru',RU);
+        ncwrite(file,'su',SU);
+        ncwrite(file,'sf',SF);
+        ncwrite(file,'me',ME);
         ncwrite(file,'smb',SMB);
         ncwrite(file,'rf',RF);
-        ncwrite(file,'time',time);
+        ncwrite(file,'time',t);
         ncwrite(file,'lon',lon);
         ncwrite(file,'lat',lat);
     end
