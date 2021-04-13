@@ -1,6 +1,6 @@
-function MAR_tmsr
-    for r=1:6
-        [a,m] = readfile(['/home/s1423313/Documents/Sense_EDI/Svalbard/Regions/Region_Masks/07_rgi60_Svalbard_corr_land_R',num2str(r),'.tif']);
+function MAR_tmsr(type,ntype)
+    for r=2:6
+        [a,m] = readfile(['/home/s1423313/Documents/Sense_EDI/Svalbard/Regions/Region_Masks/07_rgi60_Svalbard_corr_',type,'_R',num2str(r),'.tif']);
         time=[];
         x=0;
         SMB_tmsr = zeros(6939,1);
@@ -11,7 +11,7 @@ function MAR_tmsr
         SU_tmsr = zeros(6939,1);
         ME_tmsr = zeros(6939,1);
         for i=0:18
-            file = ['/exports/csce/datastore/geos/groups/geos_EO/Databases/MAR/Svalbard-RA/Svalbard_Masked/Years/Svalbard_',num2str(2000+i+1),'.nc']
+            file = ['/exports/csce/datastore/geos/groups/geos_EO/Databases/MAR/Svalbard-RA/Svalbard_Masked/Years/Svalbard_',num2str(2000+i+1),'.nc'];
             SMB = ncread(file,'smb');
             RF = ncread(file,'rf');
             SF = ncread(file,'sf');
@@ -41,7 +41,7 @@ function MAR_tmsr
             end
 
         end
-        file = ['/exports/csce/datastore/geos/groups/geos_EO/Databases/MAR/Svalbard-RA/Svalbard_Masked/Svalbard_LR',num2str(r),'.nc'];
+        file = ['/exports/csce/datastore/geos/groups/geos_EO/Databases/MAR/Svalbard-RA/Svalbard_Masked/Svalbard_',ntype,num2str(r),'.nc'];
         nt = length(time);
         nccreate(file,'time','Dimensions',{'time',1,nt},'DeflateLevel',7) ;
         nccreate(file,'smb_mean','Dimensions',{'time'},'DeflateLevel',7) ;

@@ -1,12 +1,19 @@
 function marMSK(tifname)
+%marMSK (root tif (eg RGI mask for Svalbard))--> masks MAR data --> .nc file
+%outputing 
+    %Creates mesh for the RGI mask
     [a,m]=readfile(tifname);
     [xx,yy]=readfile2meshgrid(m);
+    %creates lat and lon arrays to become coordinates in .nc (and to help with xarray in python)
+    %lat and lon in MAR are 2-d grids this converts to 1-d.
     xstart = 10.7139;
     ystart = 80.4708;
     Nx = 487;
     Ny = 430;
     lon = xstart + times((0:Nx-1),0.0360);
     lat = ystart + times((0:Ny-1),-0.0090);
+    %Read in MAR files, loop through all years and picks out the wanted
+    %variables. To see full list ncdisp and or go to Timeseries notebook.
     for nj =1:19
         MARf = ['/exports/csce/datastore/geos/groups/geos_EO/Databases/MAR/Svalbard-RA/MARv3.11.2-6km-daily-ERA5-',num2str(2000+nj),'.nc'];
         smb = ncread(MARf, 'SMB');
@@ -20,6 +27,7 @@ function marMSK(tifname)
         mlon = ncread(MARf, 'LON');
         t = ncread(MARf, 'TIME');
         nt = length(t);
+        %Preallocation of memory, increases speed of loop.
         SMB = zeros(430,487,nt);
         RF = zeros(430,487,nt);
         SF = zeros(430,487,nt);
@@ -30,7 +38,8 @@ function marMSK(tifname)
         
         for ni = 1:nt
             ni
-            %project variable on to the mesh for the mask(tif)
+            %project variable on to the mesh of RGI mask(tifname),
+            %interpolating to RGI resolution
             SMB(:,:,ni) =griddata(double(mlon),double(mlat),smb(:,:,1,ni),double(xx),double(yy),'linear');
             RF(:,:,ni) = griddata(double(mlon),double(mlat),rf(:,:,ni),double(xx),double(yy),'linear'); 
             SF(:,:,ni) = griddata(double(mlon),double(mlat),sf(:,:,ni),double(xx),double(yy),'linear');
@@ -40,6 +49,7 @@ function marMSK(tifname)
             RU(:,:,ni) = griddata(double(mlon),double(mlat),ru(:,:,1,ni),double(xx),double(yy),'linear');
         end
         nj
+        %creating .nc file,dimensions and then writing variables in
         file = ['/exports/csce/datastore/geos/groups/geos_EO/Databases/MAR/Svalbard-RA/Svalbard_Masked/test/Svalbard_',num2str(2000+nj),'.nc'];
         nx = 487;
         nccreate(file,'lon','Dimensions',{'lon',1,nx},'DeflateLevel',7) ;
